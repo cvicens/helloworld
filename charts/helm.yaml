@@ -1,0 +1,6 @@
+build:
+  uri: https://github.com/<user>/<repository>.git     
+  ref: <branch_name>                                  
+  contextDir: helloworld                              
+deploy:
+  replicas: 1

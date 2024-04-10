@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.jboss.as.quickstarts</groupId>
+  <artifactId>helloworld</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>helloworld Maven Webapp</name>
+
+
+  <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <maven.compiler.source>11</maven.compiler.source>
+      <maven.compiler.target>11</maven.compiler.target>
+      <version.server>8.0.0.GA-redhat-00009</version.server>
+      <version.bom.ee>${version.server}</version.bom.ee>
+      <version.plugin.wildfly>4.1.1.Final</version.plugin.wildfly>
+      <version.plugin.war>3.3.2</version.plugin.war>
+      <version.plugin.eap>1.0.0.Final-redhat-00014</version.plugin.eap> 
+  </properties>
+
+  <repositories>
+        <repository>
+            <id>jboss-public-maven-repository</id>
+            <name>JBoss Public Maven Repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+            <layout>default</layout>
+        </repository>
+        <repository>
+            <id>redhat-ga-maven-repository</id>
+            <name>Red Hat GA Maven Repository</name>
+            <url>https://maven.repository.redhat.com/ga/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+
+  <pluginRepositories>
+      <pluginRepository>
+          <id>jboss-public-maven-repository</id>
+          <name>JBoss Public Maven Repository</name>
+          <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+          <releases>
+              <enabled>true</enabled>
+          </releases>
+          <snapshots>
+              <enabled>true</enabled>
+          </snapshots>
+      </pluginRepository>
+      <pluginRepository>
+          <id>redhat-ga-maven-repository</id>
+          <name>Red Hat GA Maven Repository</name>
+          <url>https://maven.repository.redhat.com/ga/</url>
+          <releases>
+              <enabled>true</enabled>
+          </releases>
+          <snapshots>
+              <enabled>true</enabled>
+          </snapshots>
+      </pluginRepository>
+  </pluginRepositories>
+
+  <dependencyManagement>
+      <dependencies>
+          <dependency>
+              <groupId>org.jboss.bom</groupId>                 
+              <artifactId>jboss-eap-ee-with-tools</artifactId> 
+              <version>${version.bom.ee}</version>
+              <type>pom</type>
+              <scope>import</scope>
+          </dependency>
+      </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+     <!-- 
+      Import the Jakarta EE API, we use provided scope as the API is included in WildFly 
+      Define the scope as provided so that the dependency is not included in the application. 
+      The reason for not including the dependency in the application is that this dependency is managed by the
+      jboss-eap-ee-with-tools BOM and such dependencies are are included with JBoss EAP.
+     -->
+      <dependency>
+          <groupId>jakarta.servlet</groupId>
+          <artifactId>jakarta.servlet-api</artifactId>
+          <scope>provided</scope>
+          <!-- 
+            The dependency is defined without a version because jboss-eap-ee-with-tools BOM was imported in 
+            the <dependencyManagement> section. 
+          -->
+      </dependency>
+  </dependencies>
+  <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>${version.plugin.wildfly}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${version.plugin.war}</version>
+                </plugin>
+                <!-- JBoss EAP plugin -->
+                <plugin>
+                    <groupId>org.jboss.eap.plugins</groupId>
+                    <artifactId>eap-maven-plugin</artifactId>
+                    <version>${version.plugin.eap}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+      <profile>
+          <id>openshift</id>
+          <build>
+              <plugins>
+                  <plugin>
+                      <groupId>org.jboss.eap.plugins</groupId>
+                      <!-- 
+                        wildfly-maven-plugin is a JBoss EAP plug-in for provisioning a JBoss EAP instance, 
+                        with the application deployed, on OpenShift Container Platform.  
+                      -->
+                      <artifactId>eap-maven-plugin</artifactId>     
+                      <configuration>
+                          <channels>
+                              <!--  
+                                This specifies the JBoss EAP 8.0 channel in which the JBoss EAP server artifacts are defined. 
+                              -->
+                              <channel>
+                                  <manifest>
+                                      <groupId>org.jboss.eap.channels</groupId>
+                                      <artifactId>eap-8.0</artifactId>
+                                  </manifest>
+                              </channel>
+                          </channels>
+                          <!-- 
+                            feature-packs defines the feature-packs (zipped files that contains features to dynamically provision a server). 
+                            In this case we need the feature-packs org.wildfly:wildfly-galleon-pack and org.wildfly.cloud:wildfly-cloud-galleon-pack -->
+                          <feature-packs>
+                              <feature-pack>                            
+                                  <location>org.jboss.eap:wildfly-ee-galleon-pack</location>
+                              </feature-pack>
+                              <feature-pack>
+                                  <location>org.jboss.eap.cloud:eap-cloud-galleon-pack</location>
+                              </feature-pack>
+                          </feature-packs>
+                          <!-- 
+                            layers defines the layers (from the configured feature-packs) to include in the provisioned server. 
+                            Each layer identifies one or more server capabilities that can be installed on its own, or in combination with other layers. 
+                            In our case we opt for the cloud-server layer, which provisions just the basic features of JBoss EAP, 
+                            well suited for a cloud server. -->
+                          <layers>                                      
+                              <layer>cloud-server</layer>
+                          </layers>
+                          <name>ROOT.war</name>                         
+                      </configuration>
+                      <executions>
+                          <execution>
+                              <goals>
+                                  <goal>package</goal>
+                              </goals>
+                          </execution>
+                      </executions>
+                  </plugin>
+              </plugins>
+          </build>
+      </profile>
+  </profiles>
+</project>
