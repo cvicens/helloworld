@@ -1,6 +1,6 @@
 build:
-  uri: https://github.com/<user>/<repository>.git     
-  ref: <branch_name>                                  
+  uri: https://github.com/cvicens/helloworld.git     
+  ref: main                                  
   contextDir: helloworld                              
 deploy:
   replicas: 1
