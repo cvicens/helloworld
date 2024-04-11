@@ -1,0 +1,7 @@
+apiVersion: wildfly.org/v1alpha1
+kind: WildFlyServer
+metadata:
+  name: example
+  namespace: eap-8-tests
+spec:
+  

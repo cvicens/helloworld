@@ -1,0 +1,52 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  annotations:
+    meta.helm.sh/release-name: helloworld
+    meta.helm.sh/release-namespace: eap-8-tests
+  name: helloworld
+  labels:
+    rht.comp_ver: '8.0'
+    rht.prod_name: Red_Hat_Runtimes
+    app.kubernetes.io/instance: helloworld
+    rht.prod_ver: 2023-Q4
+    com.company: Red_Hat
+    app.openshift.io/runtime: eap
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: eap8-1.1.2
+    rht.subcomp_t: application
+    app.kubernetes.io/name: helloworld
+    rht.comp: EAP
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'helloworld:latest'
+  strategy:
+    type: Docker
+    dockerStrategy:
+      from:
+        kind: DockerImage
+        name: 'registry.redhat.io/jboss-eap-8/eap8-openjdk17-runtime-openshift-rhel8:latest'
+  source:
+    type: Dockerfile
+    dockerfile: |-
+      FROM registry.redhat.io/jboss-eap-8/eap8-openjdk17-runtime-openshift-rhel8:latest
+      COPY --chown=jboss:root /server $JBOSS_HOME
+      RUN chmod -R ug+rwX $JBOSS_HOME
+    images:
+      - from:
+          kind: ImageStreamTag
+          name: 'helloworld-build-artifacts:latest'
+        paths:
+          - sourcePath: /opt/server
+            destinationDir: .
+  triggers:
+    - type: ImageChange
+      imageChange:
+        from:
+          kind: ImageStreamTag
+          name: 'helloworld-build-artifacts:latest'
+    - type: ConfigChange
+  runPolicy: Serial

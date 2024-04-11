@@ -1,0 +1,50 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  annotations:
+    meta.helm.sh/release-name: helloworld
+    meta.helm.sh/release-namespace: eap-8-tests
+  name: helloworld-build-artifacts
+  labels:
+    rht.comp_ver: '8.0'
+    rht.prod_name: Red_Hat_Runtimes
+    app.kubernetes.io/instance: helloworld
+    rht.prod_ver: 2023-Q4
+    com.company: Red_Hat
+    app.openshift.io/runtime: eap
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: eap8-1.1.2
+    rht.subcomp_t: application
+    app.kubernetes.io/name: helloworld
+    rht.comp: EAP
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'helloworld-build-artifacts:latest'
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: DockerImage
+        name: 'registry.redhat.io/jboss-eap-8/eap8-openjdk17-builder-openshift-rhel8:latest'
+      env:
+        - name: CUSTOM_INSTALL_DIRECTORIES
+          value: extensions
+        - name: POSTGRESQL_DRIVER_VERSION
+          value: 42.7.3
+        - name: POSTGRESQL_ENABLED
+          value: 'true'
+      incremental: true
+      forcePull: true
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/cvicens/helloworld.git'
+      ref: main
+  triggers:
+    - type: ConfigChange
+  runPolicy: Serial
+status:
+  lastVersion: 3

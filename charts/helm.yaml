@@ -1,3 +1,5 @@
+# Helm values documentation: https://github.com/jbossas/eap-charts/tree/eap8/charts/eap8
+
 build:
   env:
     - name: POSTGRESQL_DRIVER_VERSION
