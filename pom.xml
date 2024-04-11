@@ -171,8 +171,11 @@
                             Each layer identifies one or more server capabilities that can be installed on its own, or in combination with other layers. 
                             In our case we opt for the cloud-server layer, which provisions just the basic features of JBoss EAP, 
                             well suited for a cloud server. -->
-                          <layers>                                      
-                              <layer>cloud-server</layer>
+                          <layers>
+                            <layer>cloud-server</layer>
+                            <layer>h2-driver</layer>
+                            <layer>ejb</layer>
+                            <layer>jsf</layer>
                           </layers>
                           <name>ROOT.war</name>                         
                       </configuration>

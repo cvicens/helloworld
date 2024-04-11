@@ -1,6 +1,13 @@
 build:
+  env:
+    - name: POSTGRESQL_DRIVER_VERSION
+      value: "42.7.3"
+    - name: POSTGRESQL_DATASOURCE
+      value: "kitchesink"
+    - name: POSTGRESQL_ENABLED
+      value: "false"
   uri: https://github.com/cvicens/helloworld.git     
   ref: main                                  
-  contextDir: .                              
+  contextDir: .
 deploy:
   replicas: 1
