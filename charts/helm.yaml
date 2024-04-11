@@ -2,12 +2,21 @@ build:
   env:
     - name: POSTGRESQL_DRIVER_VERSION
       value: "42.7.3"
-    - name: POSTGRESQL_DATASOURCE
-      value: "kitchesink"
     - name: POSTGRESQL_ENABLED
-      value: "false"
+      value: "true"
   uri: https://github.com/cvicens/helloworld.git     
   ref: main                                  
   contextDir: .
 deploy:
   replicas: 1
+  env:
+    - name: POSTGRESQL_DATASOURCE
+      value: "kitchesink"
+    - name: POSTGRESQL_DATABASE
+      value: "kitchensink_db"
+    - name: POSTGRESQL_USER
+      value: "luke"
+    - name: POSTGRESQL_PASSWORD
+      value: "password"
+    - name: POSTGRESQL_HOST
+      value: "kitchensink"
