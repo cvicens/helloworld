@@ -165,6 +165,9 @@
                               <feature-pack>
                                   <location>org.jboss.eap.cloud:eap-cloud-galleon-pack</location>
                               </feature-pack>
+                              <feature-pack>
+                                  <location>org.jboss.eap:eap-datasources-galleon-pack</location>
+                              </feature-pack>
                           </feature-packs>
                           <!-- 
                             layers defines the layers (from the configured feature-packs) to include in the provisioned server. 
@@ -173,7 +176,7 @@
                             well suited for a cloud server. -->
                           <layers>
                             <layer>cloud-server</layer>
-                            <layer>h2-driver</layer>
+                            <layer>postgresql-datasource</layer>
                             <layer>ejb</layer>
                             <layer>jsf</layer>
                           </layers>
