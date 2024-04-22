@@ -1,0 +1,9 @@
+*.old
+.dockerignore
+.gitignore
+.git/
+build-image.sh
+Containerfile
+charts
+manifest
+target
